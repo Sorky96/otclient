@@ -1,0 +1,11 @@
+Module
+  name: custom_tasks
+  description: Task system module
+  author: Sorky
+  website: ""    
+  version: 1.0.5
+  autoload: true
+  sandboxed: true
+  scripts: [ custom_tasks.lua ]
+  @onLoad: init()
+  @onUnload: terminate()

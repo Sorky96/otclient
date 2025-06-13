@@ -1,0 +1,14 @@
+RewardPanelBox < FlatPanel
+  layout: horizontalBox
+  height: 36
+  margin: 2
+  width: 268
+  border-width: 0
+  
+
+RewardItemWidget < UIItem
+  size: 32 32
+  margin-right: 10
+  text-align: left
+  text-offset: 15 12
+  font: verdana-11px-rounded

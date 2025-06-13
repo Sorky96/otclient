@@ -78,19 +78,15 @@ MessageTypes = {
     [MessageModes.Red] = MessageSettings.consoleRed,
     [MessageModes.Blue] = MessageSettings.consoleBlue,
     [MessageModes.PrivateFrom] = MessageSettings.consoleBlue,
-
     [MessageModes.GamemasterBroadcast] = MessageSettings.consoleRed,
-
     [MessageModes.DamageDealed] = MessageSettings.status,
     [MessageModes.DamageReceived] = MessageSettings.status,
     [MessageModes.Heal] = MessageSettings.status,
     [MessageModes.Exp] = MessageSettings.status,
-
     [MessageModes.DamageOthers] = MessageSettings.othersStatus,
     [MessageModes.HealOthers] = MessageSettings.othersStatus,
     [MessageModes.ExpOthers] = MessageSettings.othersStatus,
     [MessageModes.Potion] = MessageSettings.othersStatus,
-
     [MessageModes.TradeNpc] = MessageSettings.centerWhite,
     [MessageModes.Guild] = MessageSettings.centerWhite,
     [MessageModes.Party] = MessageSettings.centerGreen,
@@ -104,7 +100,6 @@ MessageTypes = {
     [MessageModes.BoostedCreature] = MessageSettings.centerWhite,
     [MessageModes.OfflineTrainning] = MessageSettings.centerWhite,
     [MessageModes.Transaction] = MessageSettings.centerWhite,
-
     [254] = MessageSettings.private
 }
 
@@ -135,42 +130,33 @@ function calculateVisibleTime(text)
 end
 
 function displayMessage(mode, text)
-
     if not g_game.isOnline() then
         return
     end
 
     local msgtype = MessageTypes[mode]
-    if not msgtype then
+    if not msgtype or msgtype == MessageSettings.none then
         return
     end
 
-    if msgtype == MessageSettings.none then
-        return
+    -- Console
+    if mode ~= MessageModes.Loot and msgtype.consoleTab ~= nil and
+       (msgtype.consoleOption == nil or modules.client_options.getOption(msgtype.consoleOption)) then
+       modules.game_console.addText(text, msgtype, tr(msgtype.consoleTab))
     end
 
-    if msgtype.consoleTab ~= nil and
-        (msgtype.consoleOption == nil or modules.client_options.getOption(msgtype.consoleOption)) then
-        if msgtype == MessageSettings.loot then
-            local lootColoredText = ItemsDatabase.setColorLootMessage(text)
-            modules.game_console.addText(lootColoredText, msgtype, tr("Server Log"))
-            modules.game_console.addText(lootColoredText, msgtype, tr(msgtype.consoleTab))
-        else
-            modules.game_console.addText(text, msgtype, tr(msgtype.consoleTab))
-        end
-    end
-
+    -- Popup
     if msgtype.screenTarget then
         local label = messagesPanel:recursiveGetChildById(msgtype.screenTarget)
-        if msgtype == MessageSettings.loot and not modules.client_options.getOption('showLootMessagesOnScreen') then
-            return
-        elseif msgtype == MessageSettings.loot then
-            local coloredText = ItemsDatabase.setColorLootMessage(text)
-            label:setColoredText(coloredText)
-        else
-            label:setText(text)
-            label:setColor(msgtype.color)
-        end
+
+if msgtype == MessageSettings.loot then
+    label:setText(plainMessage)
+    label:setColor(msgtype.color)
+else
+local plainMessage = text:gsub("%[%#%x%x%x%x%x%x%](.-)%[/#%]", "%1")
+    label:setText(plainMessage)
+    label:setColor(msgtype.color)
+end
 
         label:setVisible(true)
         removeEvent(label.hideEvent)
@@ -201,7 +187,7 @@ function displayBroadcastMessage(text)
 end
 
 function clearMessages()
-    for _i, child in pairs(messagesPanel:recursiveGetChildren()) do
+    for _, child in pairs(messagesPanel:recursiveGetChildren()) do
         if child:getId():match('Label') then
             child:hide()
             removeEvent(child.hideEvent)

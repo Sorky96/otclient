@@ -142,7 +142,7 @@ function clear()
         end
     end
     if editVipWindow ~= nil or editVipWindow then
-        editVipWindow:hide()
+        editVipWindow:hide()	
     end
 end
 

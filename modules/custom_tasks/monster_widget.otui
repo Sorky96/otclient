@@ -1,0 +1,14 @@
+MonsterWidget < FlatPanel
+  layout: verticalBox
+  height: 45
+  margin: 2
+  width: 268
+  border-width: 0
+  
+
+MonsterUI < UICreature
+  size: 32 32
+  margin-right: 10
+  text-align: left
+  text-offset: 30 14
+  font: verdana-11px-rounded

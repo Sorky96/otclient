@@ -1,0 +1,68 @@
+TaskListItem < UICheckBox
+  width: 200
+  height: 32
+  layout: horizontalBox
+  background-color: #222222
+  border-width: 1
+  border-color: #000000
+  focusable: true
+  phantom: false
+  text-align: center
+  text-offset: 0 0
+  layout: anchor
+
+  @onStyleApply: |
+    local label = self:getChildById('taskLabel')
+    if self:isOn("completed") then
+      self:setBackgroundColor("#1e4d2b")
+      self:setBorderColor("#6cc644")
+    elseif self:isChecked() then
+      self:setBackgroundColor("#111000")
+      self:setBorderColor("#ffffff")
+    else
+      self:setBackgroundColor("#222222")
+      self:setBorderColor("#000000")      
+    end
+
+
+
+  $checked:
+    background-color: #111000
+    border-color: #ffffff
+
+  $!checked:
+    background-color: #222222
+    border-color: #000000
+
+  $completed:
+    background-color: #1e4d2b
+    border-color: #6cc644
+
+  UICreature
+    id: creatureUI
+    size: 32 32
+    anchors.left: parent.left
+    anchors.top: parent.top
+    margin-left: 2
+    margin-top: 0
+
+  Label
+    id: taskLabel
+    anchors.left: creatureUI.right
+    anchors.top: parent.top
+    anchors.bottom: parent.bottom
+    margin-left: 6
+    text: "Task"
+    text-auto-resize: true
+    text-align: vertical
+    focusable: false
+    text-offset: 0 8
+    width: 150
+
+TestProgressBar < UIProgressBar
+  height: 20
+  background-color: red
+  image-source: /images/ui/progressbar_20
+  image-border: 1
+  font: verdana-11px-rounded
+  text-offset: 0 2

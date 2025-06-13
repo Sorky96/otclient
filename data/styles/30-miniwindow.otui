@@ -187,6 +187,7 @@ MiniQtWindow < UIMiniWindow
   image-border-bottom: 4
   &minimizedHeight: 17
   draggable: true
+  layout: anchor
 
   $on:
     image-border-bottom: 2

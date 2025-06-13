@@ -30,7 +30,7 @@ game
   render
     draw-covered-things: false
     invisible-ticks-per-frame: 75
-    item-ticks-per-frame: 75
+    item-ticks-per-frame: 500
     effect-ticks-per-frame: 75
     missile-ticks-per-frame: 75
     animated-text-duration: 1000

@@ -16,9 +16,14 @@ Servers_init = {
         ["protocol"] = 1320,
         ["httpLogin"] = true
     },
-    ["ip.net"] = {
+    ["localhost"] = {
         ["port"] = 7171,
-        ["protocol"] = 860,
+        ["protocol"] = 1200,
+        ["httpLogin"] = false
+    },
+	    ["gunzodus.net"] = {
+        ["port"] = 7171,
+        ["protocol"] = 1200,
         ["httpLogin"] = false
     },
 }
@@ -92,10 +97,10 @@ local function loadModules()
     -- game modules 500-999
     g_modules.autoLoadModules(999)
     g_modules.ensureModuleLoaded('game_interface')
-
     -- mods 1000-9999
     g_modules.autoLoadModules(9999)
     g_modules.ensureModuleLoaded('client_mods')
+    
 
     local script = '/' .. g_app.getCompactName() .. 'rc.lua'
 
@@ -104,7 +109,7 @@ local function loadModules()
     end
 
     -- uncomment the line below so that modules are reloaded when modified. (Note: Use only mod dev)
-    -- g_modules.enableAutoReload()
+    g_modules.enableAutoReload()
 end
 
 -- run updater, must use data.zip

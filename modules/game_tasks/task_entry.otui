@@ -1,0 +1,32 @@
+TaskEntry < Panel
+  size: 320 50
+  layout:
+    type: horizontal
+    spacing: 10
+
+  Label
+    id: taskLabel
+    width: 140
+    text: 'Kill 10 Rats'
+
+  Label
+    id: taskProgress
+    width: 50
+    text: '3/10'
+
+  Panel
+    id: rewardPanel
+    layout:
+      type: horizontal
+      spacing: 4
+    width: 100
+
+    Item
+      id: rewardItem
+      width: 32
+      height: 32
+
+    Label
+      id: rewardAmount
+      text: 'x 100'
+>

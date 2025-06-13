@@ -1046,13 +1046,18 @@ function addTabText(text, speaktype, tab, creatureName)
     local label = g_ui.createWidget('ConsoleLabel', consoleBuffer)
     label:setId('consoleLabel' .. consoleBuffer:getChildCount())
 
-    if speaktype.colored then
-        label:setColoredText(text)
-    else
-        label:setText(text)
-    end
-    
-    label:setColor(speaktype.color)
+local isLootMessage = (text:find('^Loot of ') or text:find('^%d%d:%d%d Loot of ')) and text:find('%[#%x%x%x%x%x%x%]')
+
+if isLootMessage then
+  local formatted = text:gsub("%[%#(%x%x%x%x%x%x)%](.-)%[/#%]", function(hex, inner)
+    return string.format("{%s, #%s}", inner, hex)
+  end)
+  label:setColoredText(formatted)
+else
+  label:setText(text)
+  label:setColor(speaktype.color)
+end
+
     -- consoleTabBar:blinkTab(tab)
     if readOnlyModeEnabled and activeactiveReadOnlyTabName == tab:getText() then
         local readOnlyBuffer = readOnlyPanel:getChildById('panel')
@@ -1625,6 +1630,7 @@ function onTalk(name, level, mode, message, channelId, creaturePos)
         channelId = violationsChannelId
     end
 
+
     if (mode == MessageModes.Say or mode == MessageModes.Whisper or mode == MessageModes.Yell or mode ==
         MessageModes.Spell or mode == MessageModes.MonsterSay or mode == MessageModes.MonsterYell or mode ==
         MessageModes.NpcFrom or mode == MessageModes.BarkLow or mode == MessageModes.BarkLoud or mode ==
@@ -1650,7 +1656,7 @@ function onTalk(name, level, mode, message, channelId, creaturePos)
         staticText:addMessage(name, mode, staticMessage)
         g_map.addStaticText(staticText, creaturePos)
     end
-
+	
     local defaultMessage = mode <= 3 and true or false
 
     if speaktype == SpeakTypesSettings.none then
@@ -1661,15 +1667,13 @@ function onTalk(name, level, mode, message, channelId, creaturePos)
         return
     end
 
-    local composedMessage = applyMessagePrefixies(name, level, message)
-
     if mode == MessageModes.RVRAnswer then
         violationReportTab.locked = false
-        addTabText(composedMessage, speaktype, violationReportTab, name)
+        addTabText(message, speaktype, violationReportTab, name)
     elseif mode == MessageModes.RVRContinue then
-        addText(composedMessage, speaktype, name .. '\'...', name)
+        addText(message, speaktype, name .. '\'...', name)
     elseif speaktype.private then
-        addPrivateText(composedMessage, speaktype, name, false, name)
+        addPrivateText(message, speaktype, name, false, name)
         if modules.client_options.getOption('showPrivateMessagesOnScreen') and speaktype ~=
             SpeakTypesSettings.privateNpcToPlayer then
             modules.game_textmessage.displayPrivateMessage(name .. ':\n' .. message)
@@ -1681,7 +1685,7 @@ function onTalk(name, level, mode, message, channelId, creaturePos)
         end
 
         if channel then
-            addText(composedMessage, speaktype, channel, name)
+            addText(message, speaktype, channel, name)
         else
             -- server sent a message on a channel that is not open
             pwarning('message in channel id ' .. channelId ..
